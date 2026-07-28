@@ -1,0 +1,41 @@
+# Build directories
+build-native
+build-target
+
+# Object files
+*.o
+*.lo
+*.la
+
+# Libraries
+*.a
+*.so
+*.so.*
+
+# Libtool
+.libs/
+libtool
+
+# Autotools generated files
+configure
+config.log
+config.status
+config.h
+config.h.in
+Makefile
+Makefile.in
+aclocal.m4
+compile
+depcomp
+install-sh
+missing
+stamp-h1
+
+# Automake cache
+autom4te.cache/
+
+# Dependency files
+*.d
+
+# Other
+u-boot
