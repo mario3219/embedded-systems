@@ -1,1 +1,1 @@
-A mini project to learn about autotools
+A mini project to learn about bootloaders
