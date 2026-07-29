@@ -1,3 +1,7 @@
+# Directories
+sources/u-boot
+sources/linux
+
 # Build directories
 build-native
 build-target
@@ -36,6 +40,3 @@ autom4te.cache/
 
 # Dependency files
 *.d
-
-# Other
-u-boot
