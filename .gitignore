@@ -1,9 +1,9 @@
 # Directories
-sources/u-boot
-sources/linux
-sources/toolchain
-build/linux
-crosstool-ng
+sources/u-boot/
+sources/linux/
+sources/toolchain/
+build/linux/
+crosstool-ng/
 
 # Build directories
 build-native
