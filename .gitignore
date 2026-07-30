@@ -1,8 +1,7 @@
 # Directories
-sources/u-boot/
-sources/linux/
-sources/toolchain/
-build/linux/
+sources/
+build/
+rootfs/
 crosstool-ng/
 
 # Build directories
