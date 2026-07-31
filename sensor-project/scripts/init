@@ -8,5 +8,7 @@ echo
 echo "Tiny embedded Linux has booted" 
 echo 
 
+/usr/local/bin/sensor-stats 12 15 18 21
+
 exec /bin/sh 
 EOF
