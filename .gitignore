@@ -3,6 +3,7 @@ sources/
 build/
 rootfs/
 crosstool-ng/
+data/
 
 # Build directories
 build-native
