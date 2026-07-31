@@ -30,5 +30,5 @@ make O=../../build/linux ARCH=arm custom_qemu_arm_defconfig
 make \
     O=../../build/linux \
     ARCH=arm \
-    CROSS_COMPILE=$TOOLCHAIN \
+    CROSS_COMPILE=$TOOLCHAIN- \
     -j"$(nproc)"

@@ -20,12 +20,11 @@ mkdir -p ../../build/busybox
 make O=../../build/busybox defconfig
 
 cp $SRC_DIR/configs/busybox_defconfig $SRC_DIR/build/busybox/.config
-make O=../../build/busybox olddefconfig
 
 make \
     O=../../build/busybox \
     ARCH=arm \
-    CROSS_COMPILE=$TOOLCHAIN \
+    CROSS_COMPILE=$TOOLCHAIN- \
     -j"$(nproc)"
 
 mkdir -p $SRC_DIR/rootfs/staging
@@ -33,7 +32,7 @@ mkdir -p $SRC_DIR/rootfs/staging
 make \
     O=../../build/busybox \
     ARCH=arm \
-    CROSS_COMPILE=$TOOLCHAIN \
+    CROSS_COMPILE=$TOOLCHAIN- \
     CONFIG_PREFIX="$(realpath ../../rootfs/staging)" \
     install
 
