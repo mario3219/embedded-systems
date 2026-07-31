@@ -1,19 +1,24 @@
-#!/bin/sh 
+#!/bin/bash
 
-orig_dir=$(pwd)
+# DIRECTORIES
+SCRIPT_DIR=$(pwd)
+SRC_DIR=$(realpath "$SCRIPT_DIR/..")
 
-cd ../sources
+# TOOLCHAIN
+TOOLCHAIN="arm-unknown-linux-gnueabihf"
+
+export PATH="$SRC_DIR/sources/toolchain/$TOOLCHAIN/bin:$PATH"
+export CROSS_COMPILE=$TOOLCHAIN
+
+cd $SRC_DIR
 
 if [ ! -d "u-boot/.git" ]; then
+  cd $SRC_DIR/sources/
   git clone https://git.u-boot-project.org/u-boot/u-boot.git
+  cd $SRC_DIR
 fi
 
-cd ../
-cp configs/uboot_defconfig sources/u-boot/
+cp configs/uboot_defconfig sources/u-boot/configs/
 cd sources/u-boot/
 make uboot_defconfig
-
-export PATH="$src_dir/sources/toolchain/arm-unknown-linux-gnueabihf/bin:$PATH"
-export CROSS_COMPILE=arm-unknown-linux-gnueabihf-
-
 make -j"$(nproc)"

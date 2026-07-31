@@ -1,7 +1,6 @@
-#!/bin/sh 
+#!/bin/bash
 
-orig_dir=$(pwd)
+SCRIPT_DIR=$(pwd)
 cd ../sources/crosstool-ng-1.28.0
 ./ct-ng savedefconfig
-cp defconfig ../../configs/toolchain_config
-cd $orig_dir
+cp defconfig ../../configs/toolchain_defconfig

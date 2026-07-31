@@ -1,7 +1,10 @@
-#!/bin/sh 
+#!/bin/bash
 
-orig_dir=$(pwd)
-cd ../
+# DIRECTORIES
+SCRIPT_DIR=$(pwd)
+SRC_DIR=$(realpath "$SCRIPT_DIR/..")
+
+cd $SRC_DIR
 cp scripts/init rootfs/staging/
 chmod u+x rootfs/staging/init
 mkdir -p rootfs/images

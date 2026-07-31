@@ -1,4 +1,5 @@
 CT_CONFIG_VERSION="4"
+CT_PREFIX_DIR="${CT_PREFIX:-${SRC_DIR}/sources/toolchain}/${CT_HOST:+HOST-${CT_HOST}/}${CT_TARGET}"
 # CT_REMOVE_DOCS is not set
 # CT_PREFIX_DIR_RO is not set
 CT_ARCH_ARM=y

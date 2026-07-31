@@ -1,23 +1,34 @@
-#!/bin/sh 
+#!/bin/bash
 
-orig_dir=$(pwd)
-src_dir=$orig_dir/../
-cd $src_dir/sources/
+# DIRECTORIES
+SCRIPT_DIR=$(pwd)
+SRC_DIR=$(realpath "$SCRIPT_DIR/..")
 
-if [ ! -d "linux/.git" ]; then
-  git clone https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+# TOOLCHAIN
+TOOLCHAIN="arm-unknown-linux-gnueabihf"
+
+# LINUX REPO
+REPO="https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git"
+
+# EXPORT VARIABLES
+export PATH="$SRC_DIR/sources/toolchain/$TOOLCHAIN/bin:$PATH"
+
+cd $SRC_DIR
+
+if [ ! -d "$SRC_DIR/sources/linux/.git" ]; then
+  cd sources
+  git clone $REPO
   git checkout v7.1
+  cd $SRC_DIR
 fi
 
-cd $src_dir
-mkdir -p build/linux
-cp configs/linux_config sources/linux/arch/arm/configs/custom_qemu_arm_defconfig
+cd sources/linux
+mkdir -p $SRC_DIR/build/linux
+cp $SRC_DIR/configs/linux_defconfig $SRC_DIR/sources/linux/arch/arm/configs/custom_qemu_arm_defconfig
 make O=../../build/linux ARCH=arm custom_qemu_arm_defconfig
 
-cd sources/linux
-export PATH="$src_dir/sources/toolchain/arm-unknown-linux-gnueabihf/bin:$PATH"
 make \
     O=../../build/linux \
     ARCH=arm \
-    CROSS_COMPILE=arm-unknown-linux-gnueabihf- \
+    CROSS_COMPILE=$TOOLCHAIN \
     -j"$(nproc)"
