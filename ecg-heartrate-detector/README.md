@@ -39,7 +39,9 @@ conda install -c conda-forge wfdb
 ## Development Notes
 
 * Using patient data `118e00.dat`
-* Sampling Frequency: 250 Hz
+* Sampling Frequency: 360 Hz
+* 650,000 samples
+* 2 channel lead
 
 ### Development stages
 

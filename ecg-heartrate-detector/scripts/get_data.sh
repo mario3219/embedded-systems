@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SRC_DIR=$(realpath "$(pwd)/")
-TARGET_DIR="${SRC_DIR}/data/"
+TARGET_DIR=$(realpath "$SRC_DIR/../data/")
 
 DOWNLOAD_LINK="https://physionet.org/files/nstdb/1.0.0/"
 
@@ -13,4 +13,4 @@ if [ ! -d "physionet.org" ]; then
 fi
 
 cd $SRC_DIR
-python3 process_data.py
+python3 format_data.py

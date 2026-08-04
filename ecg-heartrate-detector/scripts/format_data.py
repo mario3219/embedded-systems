@@ -2,7 +2,7 @@ import wfdb
 import numpy as np
 import os
 
-SRC_DIR = os.getcwd()
+SRC_DIR = os.path.abspath(os.path.join(os.getcwd(),".."))
 PATH = os.path.join(SRC_DIR,"data","physionet.org","files","nstdb","1.0.0","118e00")
 
 record = wfdb.rdrecord(PATH)
