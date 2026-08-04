@@ -1,6 +1,6 @@
 from scipy import signal
 
-fs = 360          # ECG sampling frequency
+fs = 250          # ECG sampling frequency
 low = 5
 high = 15
 

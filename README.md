@@ -1,18 +1,12 @@
-# embedded-systems
-A repository where I make mini-projects to learn embedded systems. Simulations are made in QEMU
+# Embedded system learning project
+A repository for learning embedded systems.
 
 ---
 
-To build development environment, use scripts in `sensor-project/scripts`
-```
-./toolchain_setup.sh
-./bootloader_setup.sh
-./busybox_setup.sh
-./kernel_setup.sh
-```
+There are two projects in this repository.
 
-Stage and run the system
-```
-./staging.sh
-./start_system.sh
-```
+`sensor-project`, which holds a basic average script intended to be cross-compiled to an ARM 64_x86 SoC.
+
+`ecg-heartrate-detector`, which is a more complex project hosting a QRS detector intended to be cross-compiled to a specific board.
+
+Each project contains their own development environment.

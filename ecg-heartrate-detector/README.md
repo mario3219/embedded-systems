@@ -6,6 +6,7 @@ This project is a low deployment C++ application for ECG QRS Complex Detection. 
 
 Data:
 <https://physionet.org/files/nstdb/1.0.0/>
+<https://physionet.org/content/nstdb/1.0.0/old/>
 
 DSP involved:
 * Bandpass filtering
@@ -14,16 +15,16 @@ DSP involved:
 
 ---
 
-Dev build
-```
-make
-```
+## Development build
+
+(Empty for now)
 
 ---
 
 ## Development Notes
 
 * Using patient data `118e00.dat`
+* Sampling Frequency: 250 Hz
 
 ### Development stages
 
