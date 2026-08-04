@@ -1,6 +1,11 @@
 # ECG Heart-rate Detector
 
-This project is a low deployment C++ application for ECG Heart Rate Detection.
+This project is a low deployment C++ application for ECG QRS Complex Detection. It utilizes the Pan-Tompkins Algorithm.
+
+<https://en.wikipedia.org/wiki/Pan%E2%80%93Tompkins_algorithm>
+
+Data:
+<https://physionet.org/files/nstdb/1.0.0/>
 
 DSP involved:
 * Bandpass filtering
