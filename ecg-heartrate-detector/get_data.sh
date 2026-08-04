@@ -1,14 +1,16 @@
 #!/bin/bash
 
-SRC_DIR=$(realpath "$(pwd)/../")
+SRC_DIR=$(realpath "$(pwd)/")
+TARGET_DIR="${SRC_DIR}/data/"
 
 DOWNLOAD_LINK="https://physionet.org/files/nstdb/1.0.0/"
 
-mkdir -p $SRC_DIR/data/
-cd $SRC_DIR/data/
+mkdir -p $TARGET_DIR
+cd $TARGET_DIR
 
 if [ ! -d "physionet.org" ]; then
   wget -r -N -c -np $DOWNLOAD_LINK
 fi
 
-cp ${SRC_DIR}/data/physionet.org/files/nstdb/1.0.0/118e00.dat .
+cd $SRC_DIR
+python3 process_data.py
