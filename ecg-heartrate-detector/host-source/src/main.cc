@@ -4,6 +4,7 @@
 #include <cstdint>
 
 #include "BandPassFilter.h"
+#include "data.h"
 
 namespace fs = std::filesystem;
 
@@ -13,6 +14,7 @@ int main() {
   fs::path INPUT = SRC_DIR.parent_path() / "data" / "118e00.raw";
   fs::path OUTPUT = SRC_DIR.parent_path() / "data" / "output.csv";
 
+  Data data;
   BandPassFilter filter;
 
   std::ifstream file(
@@ -25,10 +27,8 @@ int main() {
 
   if (file.is_open() && outputFile) {
 
-    while (file.read(
-      reinterpret_cast<char*>(&sample),
-      sizeof(sample))) 
-    {
+    while (file.read(reinterpret_cast<char*>(&sample), sizeof(sample))) {
+      data.addX(sample);
       outputFile << sample << "," << filter.process(sample) << "\n";
     }
 
