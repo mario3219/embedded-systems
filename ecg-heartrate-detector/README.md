@@ -36,7 +36,21 @@ conda install -c conda-forge wfdb
 
 ---
 
+## Algorithm setup
+
+* Bandpass filter
+* Derivation operator
+* Squaring operator
+* Moving window integration
+* Decision window
+
+---
+
 ## Development Notes
+
+* Window array size equation:
+N=W*Fs
+Where W is the time window to analyze.
 
 * Using patient data `118e00.dat`
 * Sampling Frequency: 360 Hz
