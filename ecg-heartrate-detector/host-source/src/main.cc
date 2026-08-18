@@ -16,11 +16,9 @@ int main() {
   fs::path INPUT = SRC_DIR.parent_path() / "data" / "118e00.raw";
   fs::path OUTPUT = SRC_DIR.parent_path() / "data" / "output.csv";
 
-  // declare variables
-  double fs = 250.0;
-  double T = 0.15;
-  PanTomp filter(T, fs);
-  double x;
+  // declare
+  PanTomp filter(250.0, 0.15);
+  int16_t x;
   double y;
 
   // open input stream
@@ -29,7 +27,7 @@ int main() {
 
   if (file.is_open() && outputFile) {
     while (file.read(reinterpret_cast<char*>(&x), sizeof(x))) {
-      y = filter.process(x);
+      y = filter.process(static_cast<double>(x));
       outputFile << x << "," << y << "\n";
     }
 

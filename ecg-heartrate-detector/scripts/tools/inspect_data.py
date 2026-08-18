@@ -2,10 +2,11 @@ import matplotlib.pyplot as plt
 import os
 import pandas as pd
 
-SRC_DIR = os.path.abspath(os.path.join(os.getcwd(),"../../"))
+SRC_DIR = os.path.abspath(os.path.join(os.getcwd(),"..",".."))
 OUTPUT_PATH = os.path.join(SRC_DIR,"data","output.csv")
+print(OUTPUT_PATH)
 
-df = pd.read_csv(OUTPUT_PATH).iloc[103000:103400,:]
+df = pd.read_csv(OUTPUT_PATH).iloc[103000:105000,:]
 
 plt.subplot(2,1,1)
 plt.plot(df.iloc[:,0])

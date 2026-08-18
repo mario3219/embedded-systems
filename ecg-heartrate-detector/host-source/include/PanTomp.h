@@ -6,22 +6,20 @@
 
 class PanTomp {
   public: 
-          PanTomp(double& fs, double& T);
-          double process(double& x);
+          PanTomp(double fs, double T);
+          double process(double x);
   private:
           void bandpass();
           double differentiate();
-          double window_int();
+          double square(double& dy);
+          double window_int(double& dy_2);
           
           // processed data window
           std::deque<double> w;
 
-          // raw samples
+          // Signals
           std::deque<double> X;
           std::deque<double> Y;
-
-          // filtered signal
-          std::deque<double> filt;
 
           // bandpass variables
           double b0, b1, b2, b3, b4;
