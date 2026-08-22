@@ -32,7 +32,21 @@ conda install -c conda-forge wfdb
 
 ## Development build
 
-(Empty for now)
+Requirements and install:
+```
+sudo apt install \
+cmake
+```
+
+There are three source directories:
+* `/source`
+Implementation of code.
+* `/host-source`
+The SoC variant of the implementation intended to compile to host.
+* `/target-source`
+The final SoC variant intended to compile to target.
+
+For the `/source` variant, go into `/source/build` and run `cmake ..` to generate the Makefile and run `make` to compile.
 
 ---
 
