@@ -12,5 +12,5 @@ if [ ! -d "physionet.org" ]; then
   wget -r -N -c -np $DOWNLOAD_LINK
 fi
 
-cd $SRC_DIR
+cd ${SRC_DIR}/tools/
 python3 format_data.py
