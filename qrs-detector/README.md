@@ -15,7 +15,7 @@ DSP involved:
 * Peak detection
 * Adaptive thresholds
 
-![Filter operations](/../images/Figure_1.png)
+![Filter operations](/../../images/Figure_1.png)
 
 ---
 
