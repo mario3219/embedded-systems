@@ -26,6 +26,8 @@ plt.title("Squared")
 
 plt.subplot(5,1,5)
 plt.plot(df.iloc[:,4])
+plt.plot(df.iloc[:,5])
+plt.plot(df.iloc[:,6])
 plt.title("Moving average")
 
 plt.tight_layout()
