@@ -2,12 +2,9 @@
 
 This project is a low deployment C++ application for ECG QRS Complex Detection. It utilizes the Pan-Tompkins Algorithm.
 
-<https://en.wikipedia.org/wiki/Pan%E2%80%93Tompkins_algorithm>
+<https://arxiv.org/abs/2211.03171>
 
 Data:
-
-<https://physionet.org/files/nstdb/1.0.0/>
-
 <https://physionet.org/content/nstdb/1.0.0/old/>
 
 DSP involved:
@@ -40,6 +37,11 @@ sudo apt install \
 cmake
 ```
 
+From `/scripts` folder, run:
+```
+./get_data.sh
+```
+
 There are three source directories:
 * `/source`
 Implementation of code.
@@ -48,7 +50,8 @@ The SoC variant of the implementation intended to compile to host.
 * `/target-source`
 The final SoC variant intended to compile to target.
 
-For the `/source` variant, go into `/source/build` and run `cmake ..` to generate the Makefile and run `make` to compile.
+For the `/source` variant, go into `/source/build` and run `cmake ..` to generate the Makefile and run `make` to compile. Run `./app` to run the application.
+To visualize results, run `python inspect_data.py` within `/scripts/tools/` folder.
 
 ---
 
