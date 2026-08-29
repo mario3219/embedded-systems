@@ -21,12 +21,12 @@ int main() {
   int counter = 0;
   PanTomp pt(fs, T);
 
-  int16_t x;
 
-  // open input stream
+  // open streams
   std::ifstream file(INPUT, std::ios::binary);
   std::ofstream outputFile(OUTPUT);
 
+  int16_t x;
   if (file.is_open() && outputFile) {
     while (file.read(reinterpret_cast<char*>(&x), sizeof(x))) {
       pt.process(static_cast<double>(x));

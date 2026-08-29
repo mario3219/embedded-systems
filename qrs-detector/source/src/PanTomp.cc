@@ -17,7 +17,7 @@ PanTomp::PanTomp(double& fs, double& T):
 
 void PanTomp::process(const double& x) {
     X.pop_back();
-    X.push_front(static_cast<double>(x));
+    X.push_front(x);
 
     y_filt = bandpass.filter(X, Y);
 
