@@ -6,23 +6,42 @@
 #include <deque>
 #include <vector>
 #include <fstream>
+#include <memory>
 
 class PanTomp {
   public:
-    PanTomp(double& fs, double& T);
+    PanTomp(double& fs, double& T, int& T_train);
     void process(const double& x);
-    void pretrain(const int& timer, const int& counter);
-    void detect(const int& timer, const int& counter);
+    void add_pretrain();
+    void pretrain();
+    void detect();
     void write(std::ofstream& output, const double& x);
   private:
-    std::deque<double> X;
-    std::deque<double> Y;
-    std::deque<double> W;
-    std::deque<double> init_vals;
+    int searchPeak(const int& idx);
+
+    std::deque<double> X;    // Raw inputs
+    std::deque<double> Y;    // Bandpass outputs
+    std::deque<double> W;    // Filtered data
+    std::deque<double> DW;   // Averaged data
+    std::deque<double> preW; // Pretraining window
+
+    // Intermediates
     double y_filt;
     double y_diff;
     double y_squared;
     double y_int;
+
+    // Adaptive thresholds for integrated signal
+    double SPKI;
+    double NPKI;
+    double thresI1;
+    double thresI2;
+
+    // Adaptive thresholds for filtered signal
+    double SPKF;
+    double NPKF;
+    double thresF1;
+    double thresF2;
 
     Bandpass bandpass;
 

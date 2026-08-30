@@ -2,7 +2,7 @@
 
 This project is a low deployment C++ application for ECG QRS Complex Detection. It utilizes the Pan-Tompkins Algorithm.
 
-<https://arxiv.org/abs/2211.03171>
+<https://courses.csail.mit.edu/18.337/2017/projects/subramanian_sandya/Papers/Pan%2BTompkins.pdf?>
 
 Data:
 <https://physionet.org/content/nstdb/1.0.0/old/>
@@ -66,6 +66,9 @@ To visualize results, run `python inspect_data.py` within `/scripts/tools/` fold
 ---
 
 ## Development Notes
+
+* The search for filtered peak for a candidate peak will use an estimated delay due to the pipeline. The estimated delay will be made in Python by averaging delay differences in filtered signal vs integrated signal.
+* The estimated delay is around 26 samples.
 
 * Window array size equation:
 N=W*Fs
