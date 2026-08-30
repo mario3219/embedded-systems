@@ -69,7 +69,8 @@ void PanTomp::pretrain() {
 
 void PanTomp::analyze() {
   bool found = detect();
-  if 
+  if (counter >= timer) {
+  }
   return;
 }
 

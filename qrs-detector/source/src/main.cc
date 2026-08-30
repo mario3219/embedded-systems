@@ -41,7 +41,7 @@ int main() {
     }
     while (file.read(reinterpret_cast<char*>(&x), sizeof(x))) {
       pt.process(static_cast<double>(x));
-      pt.detect();
+      pt.analyze();
       pt.write(outputFile, static_cast<double>(x));
     }
     file.close();
