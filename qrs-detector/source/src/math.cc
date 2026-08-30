@@ -24,8 +24,8 @@ double square(const double& dy) {
   return dy*dy;
 }
 
-double average(const std::deque<double>& w) {
-  double sum = std::accumulate(std::begin(w), std::end(w), 0.0, std::plus<double>());
+double average(const std::deque<double>& w, const int& delay) {
+  double sum = std::accumulate(std::begin(w), std::end(w)-delay, 0.0, std::plus<double>());
   return sum/w.size();
 }
 

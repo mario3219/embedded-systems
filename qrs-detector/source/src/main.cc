@@ -18,11 +18,10 @@ int main() {
   double fs = 250;
   double T = 0.150;
   int T_train = 2; // How many seconds to train for
-  // Learning phase timer
+  int searchRadius = 10; // Radius to search for candidate peak
   int timer = fs*2;   // Learning phase uses first 2s of samples
-
   int counter = 0;
-  PanTomp pt(fs, T, T_train);
+  PanTomp pt(fs, T, T_train, searchRadius);
 
   // open streams
   std::ifstream file(INPUT, std::ios::binary);

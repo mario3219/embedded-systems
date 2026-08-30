@@ -10,14 +10,19 @@
 
 class PanTomp {
   public:
-    PanTomp(double& fs, double& T, int& T_train);
+    PanTomp(double& fs, double& T, int& T_train, int& searchRadius);
     void process(const double& x);
     void add_pretrain();
     void pretrain();
     void detect();
     void write(std::ofstream& output, const double& x);
   private:
-    int searchPeak(const int& idx);
+    int searchPeak();
+
+    int delay; // Estimated delay due to the filters
+               // Which is estimated externally
+    int searchRadius; // Search radius to find the candidate
+                      // peak in the filtered signal
 
     std::deque<double> X;    // Raw inputs
     std::deque<double> Y;    // Bandpass outputs
@@ -30,6 +35,7 @@ class PanTomp {
     double y_diff;
     double y_squared;
     double y_int;
+    int found;
 
     // Adaptive thresholds for integrated signal
     double SPKI;
@@ -44,7 +50,6 @@ class PanTomp {
     double thresF2;
 
     Bandpass bandpass;
-
 };
 
 #endif

@@ -5,7 +5,7 @@
 
 double diff(const std::deque<double>& Y);
 double square(const double& dy);
-double average(const std::deque<double>& W);
+double average(const std::deque<double>& W, const int& delay);
 double max(const std::deque<double>& W);
 
 #endif

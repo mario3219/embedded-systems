@@ -13,7 +13,9 @@ thresF = 0.015
 fs = 250;
 
 start=0
-end=2*fs
+end=2000
+
+delay=26
 
 df = (
     pd.read_csv(OUTPUT_PATH)
@@ -52,9 +54,16 @@ plt.plot(df.iloc[:,3])
 plt.plot(peaksF, df.iloc[peaksI,3],'x')
 plt.title("Squared")
 
-plt.subplot(5,1,5)
-plt.plot(df.iloc[:,4])
-plt.plot(peaksI, df.iloc[peaksI,4],'x')
+y = df.iloc[:, 4].to_numpy()
+x = np.arange(len(y))
+plt.subplot(5, 1, 5)
+plt.plot(x - delay, y)
+plt.plot(peaksI - delay, y[peaksI], 'x')
+
+#plt.plot(df.iloc[:,5])
+plt.plot(df.iloc[:,6])
+plt.plot(df.iloc[:,7])
+
 plt.title("Moving average")
 
 plt.tight_layout()
