@@ -13,13 +13,17 @@ PanTomp::PanTomp(double& fs, double& T, int& T_train, int& searchRadius):
   // Search properties due to the filter characteristics
   delay(26),
   searchRadius(searchRadius),
-  found(0),
 
   // Data containers
   X(5, 0.0),
   Y(5, 0.0),
   DW(3, 0.0),
+  found_beat(0),
+
   W(static_cast<std::size_t>(std::round(fs*T)+delay), 0.0),
+  RR1(8, 0),
+  RR2(8, 0),
+
   // Pretraining window
   preW(static_cast<std::size_t>(std::round(fs*T_train)), 0.0),
 
@@ -67,25 +71,48 @@ void PanTomp::pretrain() {
   return;
 }
 
+// Need to remake the timer logic
+// < 200ms -> reject
+// 200-360ms -> slope check
+// > 360ms -> accept
+
+// FIX
 void PanTomp::analyze() {
-  bool found = detect();
-  if (counter >= timer) {
+  counter++;
+  found_beat = 0; // temp
+  if (!(DW[0] < DW[1] &&
+        DW[1] > DW[2])) {
+    return;
+  }
+  if (checkThresholds()) {
+    if (checkSlope()) {
+      RR1.pop_back();
+      RR1.push_front(counter);
+      counter = 0;
+      found_beat = 1; // temp
+    }
   }
   return;
 }
 
-// Reread paper if its correct
-bool PanTomp::detect() {
+// FIX
+bool PanTomp::checkSlope() {
+  if (counter < )
   bool found = false;
-  if (!(DW[0] < DW[1] &&
-        DW[1] > DW[2])) {
-    return found;
+  if (!(std::abs(DW[1]-DW[2]) < 0.5*current_slope)) {
+    found = true;
   }
+  return found;
+}
+
+bool PanTomp::checkThresholds() {
+  bool found = false;
   double peakI = DW[1];
   if (peakI > thresI1) {
     double peakF = W[searchPeak()];
     if (peakF > thresF1) {
       found = true;
+      current_slope = std::abs(DW[1] - DW[2]);
       SPKI = 0.125*peakI+0.875*SPKI;
       SPKF = 0.125*peakF+0.875*SPKF;
     } else {
@@ -94,25 +121,12 @@ bool PanTomp::detect() {
   } else {
     NPKI = 0.125*peakI+0.875*NPKI;
   }
-
   thresI1 = NPKI+0.25*(SPKI-NPKI);
   thresI2 = 0.5*thresI1;
 
   thresF1 = NPKF+0.25*(SPKF-NPKF);
   thresF2 = 0.5*thresF1;
   return found;
-}
-
-void PanTomp::write(std::ofstream& output, const double& x) {
-  output << x << "," 
-         << y_filt << ","
-         << y_diff << ","
-         << y_squared << ","
-         << y_int << ","
-         << found << ","
-         << thresI1 << ","
-         << thresF1 << "\n";
-  return;
 }
 
 int PanTomp::searchPeak() {
@@ -129,4 +143,16 @@ int PanTomp::searchPeak() {
         }
     }
     return bestIdx;
+}
+
+void PanTomp::write(std::ofstream& output, const double& x) {
+  output << x << "," 
+         << y_filt << ","
+         << y_diff << ","
+         << y_squared << ","
+         << y_int << ","
+         << found_beat << ","
+         << thresI1 << ","
+         << thresF1 << "\n";
+  return;
 }
