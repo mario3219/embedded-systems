@@ -14,10 +14,11 @@ class PanTomp {
     void process(const double& x);
     void add_pretrain();
     void pretrain();
-    void detect();
+    void analyze();
     void write(std::ofstream& output, const double& x);
   private:
     int searchPeak();
+    bool detect();
 
     int delay; // Estimated delay due to the filters
                // Which is estimated externally
@@ -48,6 +49,12 @@ class PanTomp {
     double NPKF;
     double thresF1;
     double thresF2;
+
+    
+
+    // Counter used to check if candidate peak is a T-wave
+    int counter;
+    int timer;
 
     Bandpass bandpass;
 };

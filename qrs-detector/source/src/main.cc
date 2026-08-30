@@ -19,7 +19,7 @@ int main() {
   double T = 0.150;
   int T_train = 2; // How many seconds to train for
   int searchRadius = 10; // Radius to search for candidate peak
-  int timer = fs*2;   // Learning phase uses first 2s of samples
+  int timer = static_cast<int>(fs*2);   // Learning phase uses first 2s of samples
   int counter = 0;
   PanTomp pt(fs, T, T_train, searchRadius);
 
@@ -33,13 +33,15 @@ int main() {
       pt.process(static_cast<double>(x));
       pt.add_pretrain();
       pt.write(outputFile, static_cast<double>(x));
-      if (counter == timer) {
+      counter++;
+      if (counter >= timer) {
         pt.pretrain();
         break;
       }
     }
     while (file.read(reinterpret_cast<char*>(&x), sizeof(x))) {
       pt.process(static_cast<double>(x));
+      pt.detect();
       pt.write(outputFile, static_cast<double>(x));
     }
     file.close();
@@ -50,6 +52,7 @@ int main() {
       << OUTPUT << "\n";
   }
 
+  std::cout << "Saved output to: " << "\n" << OUTPUT << "\n";
   std::cout << "Done" << "\n";
 
   return 0;

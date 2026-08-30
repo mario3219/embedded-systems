@@ -12,8 +12,8 @@ thresI = 0.003
 thresF = 0.015
 fs = 250;
 
-start=0
-end=2000
+start=10000
+end=start+2000
 
 delay=26
 
@@ -60,7 +60,15 @@ plt.subplot(5, 1, 5)
 plt.plot(x - delay, y)
 plt.plot(peaksI - delay, y[peaksI], 'x')
 
-#plt.plot(df.iloc[:,5])
+x = df.iloc[:,5].to_numpy()
+idxs = np.where(x == 1)[0]
+
+plt.vlines(
+    idxs,
+    ymin=0,
+    ymax=0.015,
+    linestyles='--'
+)
 plt.plot(df.iloc[:,6])
 plt.plot(df.iloc[:,7])
 

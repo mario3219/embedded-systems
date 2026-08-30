@@ -9,14 +9,25 @@
 #include <iostream>
 
 PanTomp::PanTomp(double& fs, double& T, int& T_train, int& searchRadius):
+  
+  // Search properties due to the filter characteristics
+  delay(26),
+  searchRadius(searchRadius),
+  found(0),
+
+  // Data containers
   X(5, 0.0),
   Y(5, 0.0),
   DW(3, 0.0),
-  delay(26),
-  found(0),
-  searchRadius(searchRadius),
   W(static_cast<std::size_t>(std::round(fs*T)+delay), 0.0),
+  // Pretraining window
   preW(static_cast<std::size_t>(std::round(fs*T_train)), 0.0),
+
+  // A QRS complex can't physiologically occur within 200ms of each other
+  counter(0),
+  timer(static_cast<int>(std::round(fs*0.360))),
+  
+  // The filter
   bandpass()
 {}
 
@@ -56,17 +67,24 @@ void PanTomp::pretrain() {
   return;
 }
 
-void PanTomp::detect() {
-  found = 0; // temp
+void PanTomp::analyze() {
+  bool found = detect();
+  if 
+  return;
+}
+
+// Reread paper if its correct
+bool PanTomp::detect() {
+  bool found = false;
   if (!(DW[0] < DW[1] &&
         DW[1] > DW[2])) {
-    return;
+    return found;
   }
   double peakI = DW[1];
   if (peakI > thresI1) {
     double peakF = W[searchPeak()];
     if (peakF > thresF1) {
-      found = 1;  // temp
+      found = true;
       SPKI = 0.125*peakI+0.875*SPKI;
       SPKF = 0.125*peakF+0.875*SPKF;
     } else {
@@ -81,7 +99,7 @@ void PanTomp::detect() {
 
   thresF1 = NPKF+0.25*(SPKF-NPKF);
   thresF2 = 0.5*thresF1;
-  return;
+  return found;
 }
 
 void PanTomp::write(std::ofstream& output, const double& x) {
