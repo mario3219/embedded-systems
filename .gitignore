@@ -2,12 +2,12 @@
 sources/
 build/
 rootfs/
-crosstool-ng/
 data/
 
 # Build directories
 build-native
 build-target
+build-debug/
 
 # Object files
 *.o

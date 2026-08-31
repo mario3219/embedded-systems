@@ -1,3 +1,0 @@
-/home/jonathan/git-repos/embedded-systems/qrs-detector/source/build-debug/CMakeFiles/app.dir
-/home/jonathan/git-repos/embedded-systems/qrs-detector/source/build-debug/CMakeFiles/edit_cache.dir
-/home/jonathan/git-repos/embedded-systems/qrs-detector/source/build-debug/CMakeFiles/rebuild_cache.dir

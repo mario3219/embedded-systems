@@ -1,12 +1,95 @@
-# Embedded system learning project
-A repository for learning embedded systems.
+# ECG Heart-rate Detector
+
+This project is a low deployment C++ application for ECG QRS Complex Detection. It utilizes the Pan-Tompkins Algorithm.
+
+<https://courses.csail.mit.edu/18.337/2017/projects/subramanian_sandya/Papers/Pan%2BTompkins.pdf?>
+
+Data:
+<https://physionet.org/content/nstdb/1.0.0/old/>
+
+The algorithm attenuates noise using an initial bandpass filter, with poles and zeros adjusted for the 1985 paper. Information about the slope of the QRS is obtained through a differentiation filter, and a squaring process is used to intensify the frequency response of the differentiation step. This helps with filtering for candidate peaks that are in reality T-waves. An averaging filter is used to produce a signal containing the slope and width of the QRS complex.
+
+The filtered and integrated signal is then inserted through various tests. A pretraining phase is used to initialize thresholds, which lasts for 2s corresponding to 2*Fs samples. A window length of 150ms is used to condense QRS complex information during the averaging step. Samples are processed concurrently until a candidate peak is detected, whereafter thresholding is used to determine if a peak is a valid QRS complex or noise. If a peak is detected within 200ms, it is dropped as noise. Otherwise, thresholding is used. If it is detected within 200-360ms, it can either be a T-wave or an R-peak, whereafter a slope test is made. If all tests are passed, the wave is identified as a QRS complex.
+
+All time dependencies are based physiological limitations, for example a heartbeat cannot physiologically occur within 200ms of each other due to refractory periods.
+
+The model outputs streaming binary series of detected peaks.
+
+![Filter operations](../images/Figure_1.png)
+![Filter operations](../images/Figure_2.png)
+![Filter operations](../images/Figure_3.png)
 
 ---
 
-There are two projects in this repository.
+## Requirements and setup
 
-`sensor-project`, which holds a basic average script intended to be cross-compiled to an ARM 64_x86 SoC.
+Preferably work in a conda environment
 
-`ecg-heartrate-detector`, which is a more complex project hosting a QRS detector intended to be cross-compiled to a specific board.
+```
+conda create -n project-env python=3.14.4
+conda activate project-env
 
-Each project contains their own development environment.
+conda install -c conda-forge wfdb
+```
+
+---
+
+## Development build
+
+Requirements and install:
+```
+sudo apt install \
+cmake libtool libtool-bin flex \
+texinfo help2man bison
+```
+
+From `/scripts` folder, run:
+```
+./get_data.sh
+```
+
+There are three source directories:
+* `/source`
+Implementation of code.
+* `/host-source`
+The SoC variant of the implementation intended to compile to host.
+* `/target-source`
+The final SoC variant intended to compile to target.
+
+For the `/source` variant, go into `/source/build` and run `cmake ..` to generate the Makefile and run `make` to compile. Run `./app` to run the application.
+To visualize results, run any python inspect file within `/scripts/tools/` folder.
+
+---
+
+## Algorithm setup
+
+* Bandpass filter
+* Derivation operator
+* Squaring operator
+* Moving window integration
+* Decision window
+
+---
+
+## Development Notes
+
+* Cross-compile to aarch64-rpi4-linux-gnu, which is a 64-bit Raspberry Pi 4 SoC
+
+* The search for filtered peak for a candidate peak will use an estimated delay due to the pipeline. The estimated delay will be made in Python by averaging delay differences in filtered signal vs integrated signal.
+* The estimated delay is around 26 samples.
+
+* Window array size equation:
+N=W*Fs
+Where W is the time window to analyze.
+
+* Using patient data `118e00.dat`
+* Sampling Frequency: 360 Hz
+* 650,000 samples
+* 2 channel lead
+
+### Development stages
+
+* Make sure ECG file stream can run through QEMU to the application
+* Use a TCP stream to simulate a host process
+* Create a virtual serial sensor
+* Eventually replace the sensor with real hardware interfaces
