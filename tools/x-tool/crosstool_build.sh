@@ -6,5 +6,6 @@ BUILD_DIR=$(realpath "${CROSS_DIR}/../")
 
 cd ${CROSS_DIR}
 export BUILD_DIR
+export PATH="/usr/bin:/bin:$PATH"
 echo "Building to ${BUILD_DIR}"
-./ct-ng build
+./ct-ng build.$(nproc)

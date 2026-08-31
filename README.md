@@ -15,9 +15,9 @@ All time dependencies are based physiological limitations, for example a heartbe
 
 The model outputs streaming binary series of detected peaks.
 
-![Filter operations](../images/Figure_1.png)
-![Filter operations](../images/Figure_2.png)
-![Filter operations](../images/Figure_3.png)
+![Filter operations](images/Figure_1.png)
+![Filter operations](images/Figure_2.png)
+![Filter operations](images/Figure_3.png)
 
 ---
 
@@ -73,7 +73,8 @@ To visualize results, run any python inspect file within `/scripts/tools/` folde
 
 ## Development Notes
 
-* Cross-compile to aarch64-rpi4-linux-gnu, which is a 64-bit Raspberry Pi 4 SoC
+* Toolchain config: aarch64-unknown-linux-gnu
+* Bootloader config: qemu_arm64_defconfig
 
 * The search for filtered peak for a candidate peak will use an estimated delay due to the pipeline. The estimated delay will be made in Python by averaging delay differences in filtered signal vs integrated signal.
 * The estimated delay is around 26 samples.

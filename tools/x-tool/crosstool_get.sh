@@ -2,7 +2,7 @@
 
 # DIRECTORIES
 SRC_DIR=$(realpath "$(pwd)/")
-SOURCES_DIR=$(realpath "${SRC_DIR}/../sources/")
+SOURCES_DIR=$(realpath "${SRC_DIR}/../../sources/")
 
 # WEB LINKS
 CROSS_LINK="http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.28.0.tar.xz"
