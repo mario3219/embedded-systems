@@ -1,9 +1,23 @@
 #ifndef PANTOMP_DATA
 #define PANTOMP_DATA
 
+#include <iostream>
+#include <fstream>
 #include <array>
+#include <vector>
 
-struct PanTompData {
+class PanTompData {
+  public:
+    PanTompData()=default;
+//    void addX(const double& x);
+//    void addY(const double& y);
+//    void addW(const double& y_squared);
+//    void addDW(const double& y_int);
+//    void addpreW();
+//    void addRR1();
+//    void addRR2();
+    void write(std::ofstream& output, double x) const;
+
     std::size_t delay;  // Estimated delay due to the filters
                               // which is estimated externally
     
@@ -14,13 +28,13 @@ struct PanTompData {
     int lower_timer;
     int counter = 0;
 
-    std::array<double, 5> X(5, 0.0);    // Raw inputs
-    std::array<double, 5> Y(5, 0.0);    // Bandpass outputs
-    std::array<int> RR1(8, 0.0);        // RR intervals
-    std::array<int> RR2(8, 0.0);
-    std::array<double> W;               // Filtered data
-    std::array<double> DW;              // Averaged data
-    std::array<double> preW;            // Pretraining window
+    std::array<double, 5> X{};    // Raw inputs
+    std::array<double, 5> Y{};    // Bandpass outputs
+    std::array<int, 8> RR1{};        // RR intervals
+    std::array<int, 8> RR2{};
+    std::vector<double> W;               // Filtered data
+    std::vector<double> DW;              // Averaged data
+    std::vector<double> preW;            // Pretraining window
 
     // Intermediates
     double y_filt;

@@ -12,7 +12,12 @@
 
 class PanTomp {
   public:
-    PanTomp(double& fs, double& T, int& T_train, int& searchRadius);
+    PanTomp(
+        const double& fs,
+        const double& T,
+        const int& T_train,
+        const int& searchRadius
+    );
     void process(const double& x);
     void add_pretrain();
     void pretrain();

@@ -59,3 +59,14 @@ double findMaxSlope(
 double max(const std::span<double>& W) {
   return *std::max_element(W.begin(), W.end());
 }
+
+//double average(
+//    const std::span<const double>& w,
+//    std::size_t delay) {
+//    double sum = std::accumulate(
+//        w.begin(),
+//        w.end() - delay,
+//        0.0
+//    );
+//    return sum / static_cast<double>(w.size() - delay);
+//}

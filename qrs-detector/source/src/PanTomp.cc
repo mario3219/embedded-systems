@@ -1,6 +1,6 @@
 #include "PanTomp.h"
 #include "bandpass.h"
-#include "math.h"
+#include "utils.h"
 
 #include <numeric>
 #include <deque>
@@ -17,55 +17,47 @@ PanTomp::PanTomp(
   data.delay = 26;
   data.searchRadius = searchRadius;
 
-  data.X(5, 0.0);
-  data.Y(5, 0.0);
+  std::size_t window_size = static_cast<std::size_t>(std::round(fs*T)+data.delay);
+  std::size_t train_window_size = static_cast<std::size_t>(std::round(fs*T)+data.delay);
+  data.upper_timer = static_cast<int>(std::round(fs*0.360));
+  data.lower_timer = static_cast<int>(std::round(fs*0.200));
 
-  std::size_t window_size = static_cast<std::size_t>(std::round(fs*T)+delay);
-  std::size_t train_window_size = static_cast<std::size_t>(std::round(fs*T)+delay);
-  int upper_timer = static_cast<int>(std::round(fs*0.360));
-  int lower_timer = static_cast<int>(std::round(fs*0.200));
-
-  data.W(window_size, 0.0);
-  data.DW(window_size, 0.0);
-  data.preW(train_window_size, 0.0);
-
-  data.upper_timer(upper_timer);
-  data.lower_timer(lower_timer);
+  data.W.resize(window_size, 0.0);
+  data.DW.resize(window_size, 0.0);
+  data.preW.resize(train_window_size, 0.0);
 }
 
 void PanTomp::process(const double& x) {
-    X.pop_back(); X.push_front(x);
-    y_filt = bandpass.filter(X, Y);
-    Y.pop_back();Y.push_front(y_filt);
-    y_diff = diff(Y);
-    y_squared = square(y_diff);
-    W.pop_back(); W.push_front(y_squared);
-    y_int = average(W, delay);
-    DW.pop_back();
-    DW.push_front(y_int);
+  push_front(data.X, x);
+  data.y_filt = bandpass.filter(data.X, data.Y);
+  push_front(data.Y, data.y_filt);
+  data.y_diff = diff(data.Y);
+  data.y_squared = square(data.y_diff);
+  push_front(data.W, data.y_squared);
+  data.y_int = average(data.W,0);
+  push_front(data.DW, data.y_int);
   return;
 }
 
 void PanTomp::add_pretrain() {
-  preW.pop_back();
-  preW.push_front(y_int);
+  push_front(data.preW, data.y_int);
   return;
 }
 
 void PanTomp::pretrain() {
-  SPKI = 0.25*max(preW);
-  NPKI = 0.5*average(preW, 0);
-  thresI1 = NPKI*0.25*(SPKI-NPKI);
-  thresI2 = 0.5*thresI1;
+  data.SPKI = 0.25*max(data.preW);
+  data.NPKI = 0.5*average(data.preW, 0);
+  data.thresI1 = data.NPKI*0.25*(data.SPKI-data.NPKI);
+  data.thresI2 = 0.5*data.thresI1;
 
-  SPKF = 0.25*max(preW);
-  NPKF = 0.5*average(preW, 0);
-  thresF1 = NPKF*0.25*(SPKF-NPKF);
-  thresF2 = 0.5*thresF1;
+  data.SPKF = 0.25*max(data.preW);
+  data.NPKF = 0.5*average(data.preW, 0);
+  data.thresF1 = data.NPKF*0.25*(data.SPKF-data.NPKF);
+  data.thresF2 = 0.5*data.thresF1;
 
   // Pretraining window is no longer needed
-  preW.clear();
-  preW.shrink_to_fit();
+  data.preW.clear();
+  data.preW.shrink_to_fit();
   return;
 }
 
@@ -74,82 +66,76 @@ void PanTomp::pretrain() {
 // 200-360ms -> slope check
 // > 360ms -> accept
 void PanTomp::analyze() {
-  counter++;
-  found_beat = 0; // temp
-  if (counter < lower_timer) {
+  data.counter++;
+  data.found_beat = 0; // temp
+  if (data.counter < data.lower_timer) {
     return;
   }
-  if (!(DW[0] < DW[1] &&
-        DW[1] > DW[2])) {
+  if (!(data.DW[0] < data.DW[1] &&
+        data.DW[1] > data.DW[2])) {
     return;
   }
   if (!checkThresholds()) {
     return;
   }
-  if (counter < upper_timer) {
+  if (data.counter < data.upper_timer) {
     if (!checkSlope()) {
       return;
     }
   }
-  current_max_slope = findMaxSlope();
+  data.current_max_slope = findMaxSlope(
+        data.DW,
+        data.current_max_slope
+      );
   addRR();
-  counter = 0;
-  found_beat = 1; // temp
+  data.counter = 0;
+  data.found_beat = 1; // temp
   return;
 }
 
 void PanTomp::addRR() {
-  RR1.pop_back();
-  RR1.push_front(counter);
-  RR1_avg = average(RR1,0);
-  if (0.92*RR2_avg < counter &&
-      1.16*RR2_avg < counter) {
-    RR2.pop_back();
-    RR2.push_front(counter);
-    RR2_avg = average(RR2,0);
+  push_front(data.RR1, data.counter);
+  data.RR1_avg = average(data.RR1,0);
+  if (0.92*data.RR2_avg < data.counter &&
+      1.16*data.RR2_avg < data.counter) {
+    push_front(data.RR2, data.counter);
+    data.RR2_avg = average(data.RR2,0);
   }
   return;
 }
 
 bool PanTomp::checkSlope() {
-  bool found = false;
-  if (!(std::abs(DW[1]-DW[2]) < 0.5*current_max_slope)) {
-    found = true;
+  if (!(std::abs(data.DW[1]-data.DW[2]) < 0.5*data.current_max_slope)) {
+    return true;
+  } else {
+    return false;
   }
-  return found;
 }
 
 bool PanTomp::checkThresholds() {
   bool found = false;
-  double peakI = DW[1];
-  if (peakI > thresI1) {
-    double peakF = W[searchPeak()];
-    if (peakF > thresF1) {
+  double peakI = data.DW[1];
+  if (peakI > data.thresI1) {
+    double peakF = data.W[searchPeak()];
+    if (peakF > data.thresF1) {
       found = true;
-      SPKI = 0.125*peakI+0.875*SPKI;
-      SPKF = 0.125*peakF+0.875*SPKF;
+      data.SPKI = 0.125*peakI+0.875*data.SPKI;
+      data.SPKF = 0.125*peakF+0.875*data.SPKF;
     } else {
-      NPKF = 0.125*peakF+0.875*NPKF;
+      data.NPKF = 0.125*peakF+0.875*data.NPKF;
     }
   } else {
-    NPKI = 0.125*peakI+0.875*NPKI;
+    data.NPKI = 0.125*peakI+0.875*data.NPKI;
   }
-  thresI1 = NPKI+0.25*(SPKI-NPKI);
-  thresI2 = 0.5*thresI1;
+  data.thresI1 = data.NPKI+0.25*(data.SPKI-data.NPKI);
+  data.thresI2 = 0.5*data.thresI1;
 
-  thresF1 = NPKF+0.25*(SPKF-NPKF);
-  thresF2 = 0.5*thresF1;
+  data.thresF1 = data.NPKF+0.25*(data.SPKF-data.NPKF);
+  data.thresF2 = 0.5*data.thresF1;
   return found;
 }
 
 void PanTomp::write(std::ofstream& output, const double& x) {
-  output << x << "," 
-         << y_filt << ","
-         << y_diff << ","
-         << y_squared << ","
-         << y_int << ","
-         << found_beat << ","
-         << thresI1 << ","
-         << thresF1 << "\n";
+  data.write(output, x);
   return;
 }
