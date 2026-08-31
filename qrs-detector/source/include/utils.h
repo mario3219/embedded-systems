@@ -7,6 +7,8 @@
 double diff(const std::deque<double>& Y);
 double square(const double& dy);
 double max(const std::deque<double>& W);
+int searchPeak();
+double findMaxSlope();
 
 template <typename T>
 double average(const std::deque<T>& w, std::size_t delay) {

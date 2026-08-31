@@ -8,38 +8,30 @@
 #include <algorithm>
 #include <iostream>
 
-PanTomp::PanTomp(double& fs, double& T, int& T_train, int& searchRadius):
-  
-  // Search properties due to the filter characteristics
-  delay(26),
-  searchRadius(searchRadius),
+PanTomp::PanTomp(
+    const double& fs,
+    const double& T,
+    const int& T_train,
+    const int& searchRadius) {
 
-  // Data containers
-  X(5, 0.0),
-  Y(5, 0.0),
-  found_beat(0),
+  data.delay = 26;
+  data.searchRadius = searchRadius;
 
-  DW(static_cast<std::size_t>(std::round(fs*T)+delay), 0.0),
-  W(static_cast<std::size_t>(std::round(fs*T)+delay), 0.0),
-  RR1(8, 0),
-  RR2(8, 0),
+  data.X(5, 0.0);
+  data.Y(5, 0.0);
 
-  // Pretraining window
-  preW(static_cast<std::size_t>(std::round(fs*T_train)), 0.0),
+  std::size_t window_size = static_cast<std::size_t>(std::round(fs*T)+delay);
+  std::size_t train_window_size = static_cast<std::size_t>(std::round(fs*T)+delay);
+  int upper_timer = static_cast<int>(std::round(fs*0.360));
+  int lower_timer = static_cast<int>(std::round(fs*0.200));
 
-  // Initial RR limits
-  RR1_avg(0.0),
-  RR2_avg(0.0),
+  data.W(window_size, 0.0);
+  data.DW(window_size, 0.0);
+  data.preW(train_window_size, 0.0);
 
-  // A QRS complex can't physiologically occur within 200ms of each other
-  // but can occur within 360ms, but can be misinterpreted as a T-wave
-  counter(0),
-  upper_timer(static_cast<int>(std::round(fs*0.360))),
-  lower_timer(static_cast<int>(std::round(fs*0.200))),
-  
-  // The filter
-  bandpass()
-{}
+  data.upper_timer(upper_timer);
+  data.lower_timer(lower_timer);
+}
 
 void PanTomp::process(const double& x) {
     X.pop_back(); X.push_front(x);
@@ -148,34 +140,6 @@ bool PanTomp::checkThresholds() {
   thresF1 = NPKF+0.25*(SPKF-NPKF);
   thresF2 = 0.5*thresF1;
   return found;
-}
-
-int PanTomp::searchPeak() {
-    int start = delay - searchRadius;
-    int end   = delay + searchRadius;
-    int bestIdx = delay;
-    double bestPeak = W[delay];
-    for (int i = start; i <= end; ++i) {
-        if (W[i] > W[i-1] &&
-            W[i] > W[i+1] &&
-            W[i] > bestPeak) {
-            bestPeak = W[i];
-            bestIdx = i;
-        }
-    }
-    return bestIdx;
-}
-
-double PanTomp::findMaxSlope() {
-  int max_slope = std::abs(DW[1] - DW[2]);
-  int current_slope;
-  for (int i = 2; i <= current_max_slope-1; i++) {
-    current_slope = std::abs(DW[i]-DW[i+1]);
-    if (current_slope > max_slope) {
-      max_slope = current_slope;
-    }
-  }
-  return max_slope;
 }
 
 void PanTomp::write(std::ofstream& output, const double& x) {
