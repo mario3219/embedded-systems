@@ -1,15 +1,17 @@
 #ifndef BANDPASS
 #define BANDPASS
 
-#include <deque>
-#include <vector>
+#include <array>
 
 class Bandpass {
   public:
-    Bandpass();
-    double filter(std::deque<double>& X, std::deque<double>& Y);
+    Bandpass()=default;
+    double filter(
+        const std::array<double, 5>& X, 
+        const std::array<double, 5>& Y
+    );
   private:
-    std::vector<double> b;
-    std::vector<double> a;
+    static const std::array<double, 5> b;
+    static const std::array<double, 4> a;
 };
 #endif
