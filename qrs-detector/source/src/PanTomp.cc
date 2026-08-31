@@ -17,9 +17,9 @@ PanTomp::PanTomp(double& fs, double& T, int& T_train, int& searchRadius):
   // Data containers
   X(5, 0.0),
   Y(5, 0.0),
-  DW(3, 0.0),
   found_beat(0),
 
+  DW(static_cast<std::size_t>(std::round(fs*T)+delay), 0.0),
   W(static_cast<std::size_t>(std::round(fs*T)+delay), 0.0),
   RR1(8, 0),
   RR2(8, 0),
@@ -27,9 +27,15 @@ PanTomp::PanTomp(double& fs, double& T, int& T_train, int& searchRadius):
   // Pretraining window
   preW(static_cast<std::size_t>(std::round(fs*T_train)), 0.0),
 
+  // Initial RR limits
+  RR1_avg(0.0),
+  RR2_avg(0.0),
+
   // A QRS complex can't physiologically occur within 200ms of each other
+  // but can occur within 360ms, but can be misinterpreted as a T-wave
   counter(0),
-  timer(static_cast<int>(std::round(fs*0.360))),
+  upper_timer(static_cast<int>(std::round(fs*0.360))),
+  lower_timer(static_cast<int>(std::round(fs*0.200))),
   
   // The filter
   bandpass()
@@ -75,31 +81,47 @@ void PanTomp::pretrain() {
 // < 200ms -> reject
 // 200-360ms -> slope check
 // > 360ms -> accept
-
-// FIX
 void PanTomp::analyze() {
   counter++;
   found_beat = 0; // temp
+  if (counter < lower_timer) {
+    return;
+  }
   if (!(DW[0] < DW[1] &&
         DW[1] > DW[2])) {
     return;
   }
-  if (checkThresholds()) {
-    if (checkSlope()) {
-      RR1.pop_back();
-      RR1.push_front(counter);
-      counter = 0;
-      found_beat = 1; // temp
+  if (!checkThresholds()) {
+    return;
+  }
+  if (counter < upper_timer) {
+    if (!checkSlope()) {
+      return;
     }
+  }
+  current_max_slope = findMaxSlope();
+  addRR();
+  counter = 0;
+  found_beat = 1; // temp
+  return;
+}
+
+void PanTomp::addRR() {
+  RR1.pop_back();
+  RR1.push_front(counter);
+  RR1_avg = average(RR1,0);
+  if (0.92*RR2_avg < counter &&
+      1.16*RR2_avg < counter) {
+    RR2.pop_back();
+    RR2.push_front(counter);
+    RR2_avg = average(RR2,0);
   }
   return;
 }
 
-// FIX
 bool PanTomp::checkSlope() {
-  if (counter < )
   bool found = false;
-  if (!(std::abs(DW[1]-DW[2]) < 0.5*current_slope)) {
+  if (!(std::abs(DW[1]-DW[2]) < 0.5*current_max_slope)) {
     found = true;
   }
   return found;
@@ -112,7 +134,6 @@ bool PanTomp::checkThresholds() {
     double peakF = W[searchPeak()];
     if (peakF > thresF1) {
       found = true;
-      current_slope = std::abs(DW[1] - DW[2]);
       SPKI = 0.125*peakI+0.875*SPKI;
       SPKF = 0.125*peakF+0.875*SPKF;
     } else {
@@ -143,6 +164,18 @@ int PanTomp::searchPeak() {
         }
     }
     return bestIdx;
+}
+
+double PanTomp::findMaxSlope() {
+  int max_slope = std::abs(DW[1] - DW[2]);
+  int current_slope;
+  for (int i = 2; i <= current_max_slope-1; i++) {
+    current_slope = std::abs(DW[i]-DW[i+1]);
+    if (current_slope > max_slope) {
+      max_slope = current_slope;
+    }
+  }
+  return max_slope;
 }
 
 void PanTomp::write(std::ofstream& output, const double& x) {

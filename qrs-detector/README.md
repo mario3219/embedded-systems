@@ -7,12 +7,17 @@ This project is a low deployment C++ application for ECG QRS Complex Detection. 
 Data:
 <https://physionet.org/content/nstdb/1.0.0/old/>
 
-DSP involved:
-* Bandpass filtering
-* Peak detection
-* Adaptive thresholds
+The algorithm attenuates noise using an initial bandpass filter, with poles and zeros adjusted for the 1985 paper. Information about the slope of the QRS is obtained through a differentiation filter, and a squaring process is used to intensify the frequency response of the differentiation step. This helps with filtering for candidate peaks that are in reality T-waves. An averaging filter is used to produce a signal containing the slope and width of the QRS complex.
+
+The filtered and integrated signal is then inserted through various tests. A pretraining phase is used to initialize thresholds, which lasts for 2s corresponding to 2*Fs samples. A window length of 150ms is used to condense QRS complex information during the averaging step. Samples are processed concurrently until a candidate peak is detected, whereafter thresholding is used to determine if a peak is a valid QRS complex or noise. If a peak is detected within 200ms, it is dropped as noise. Otherwise, thresholding is used. If it is detected within 200-360ms, it can either be a T-wave or an R-peak, whereafter a slope test is made. If all tests are passed, the wave is identified as a QRS complex.
+
+All time dependencies are based physiological limitations, for example a heartbeat cannot physiologically occur within 200ms of each other due to refractory periods.
+
+The model outputs streaming binary series of detected peaks.
 
 ![Filter operations](../images/Figure_1.png)
+![Filter operations](../images/Figure_2.png)
+![Filter operations](../images/Figure_3.png)
 
 ---
 
@@ -51,7 +56,7 @@ The SoC variant of the implementation intended to compile to host.
 The final SoC variant intended to compile to target.
 
 For the `/source` variant, go into `/source/build` and run `cmake ..` to generate the Makefile and run `make` to compile. Run `./app` to run the application.
-To visualize results, run `python inspect_data.py` within `/scripts/tools/` folder.
+To visualize results, run any python inspect file within `/scripts/tools/` folder.
 
 ---
 

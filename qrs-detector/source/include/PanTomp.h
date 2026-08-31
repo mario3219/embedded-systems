@@ -17,16 +17,18 @@ class PanTomp {
     void analyze();
     void write(std::ofstream& output, const double& x);
   private:
+    void addRR();
     bool checkSlope();
     bool checkThresholds();
     int searchPeak();
+    double findMaxSlope();
 
-    int delay; // Estimated delay due to the filters
+    std::size_t delay; // Estimated delay due to the filters
                // Which is estimated externally
     int searchRadius; // Search radius to find the candidate
                       // peak in the filtered signal
-    int upper_timer;  // TODO
-    int lower_timer;  // TODO
+    int upper_timer;
+    int lower_timer;
 
     std::deque<double> X;    // Raw inputs
     std::deque<double> Y;    // Bandpass outputs
@@ -41,7 +43,7 @@ class PanTomp {
     double y_diff;
     double y_squared;
     double y_int;
-    double current_slope;
+    double current_max_slope;
     int found_beat; // temp
 
     // Adaptive thresholds for integrated signal
@@ -55,6 +57,10 @@ class PanTomp {
     double NPKF;
     double thresF1;
     double thresF2;
+
+    // RR thresholds
+    double RR1_avg;
+    double RR2_avg;
 
     // Counter used to check if candidate peak is a T-wave
     int counter;
