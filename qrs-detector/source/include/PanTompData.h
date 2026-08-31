@@ -9,13 +9,6 @@
 class PanTompData {
   public:
     PanTompData()=default;
-//    void addX(const double& x);
-//    void addY(const double& y);
-//    void addW(const double& y_squared);
-//    void addDW(const double& y_int);
-//    void addpreW();
-//    void addRR1();
-//    void addRR2();
     void write(std::ofstream& output, double x) const;
 
     std::size_t delay;  // Estimated delay due to the filters

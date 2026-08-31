@@ -10,8 +10,5 @@ class Bandpass {
         const std::array<double, 5>& X, 
         const std::array<double, 5>& Y
     );
-  private:
-    static const std::array<double, 5> b;
-    static const std::array<double, 4> a;
 };
 #endif

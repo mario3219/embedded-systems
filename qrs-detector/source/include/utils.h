@@ -7,36 +7,22 @@
 
 double diff(const std::array<double, 5>& Y);
 double square(const double& dy);
-int searchPeak();
-double findMaxSlope(
-    const std::span<const double>& DW,
-    const double& current_max_slope
-    );
+int searchPeak(
+    const std::span<double>& W,
+    const int& delay,
+    const int& searchRadius);
+double findMaxSlope(const std::span<const double>& DW);
 double max(const std::span<const double>& W);
 
-//double average(
-//    const std::span<const double>& w,
-//    std::size_t delay);
-
-template <typename T>
-double average(std::span<const T> w, std::size_t delay)
+template <typename Container>
+double average(const Container& w, std::size_t delay)
 {
     double sum = std::accumulate(
         w.begin(),
         w.end() - delay,
         0.0
     );
-
     return sum / static_cast<double>(w.size() - delay);
-}
-
-template <typename Container>
-double average(const Container& w, std::size_t delay)
-{
-    return average(
-        std::span{w},
-        delay
-    );
 }
 
 template <typename Container, typename T>

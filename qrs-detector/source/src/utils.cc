@@ -27,46 +27,46 @@ int searchPeak(
     const int& delay,
     const int& searchRadius) {
 
-  int start = delay - searchRadius;
-  int end   = delay + searchRadius;
-  int bestIdx = delay;
-  double bestPeak = W[delay];
-  for (int i = start; i <= end; ++i) {
-      if (W[i] > W[i-1] &&
-          W[i] > W[i+1] &&
-          W[i] > bestPeak) {
-          bestPeak = W[i];
-          bestIdx = i;
-      }
-  }
-  return bestIdx;
-}
-
-double findMaxSlope(
-    const std::span<double>& DW,
-    const double& current_max_slope) {
-  int max_slope = std::abs(DW[1] - DW[2]);
-  int current_slope;
-  for (int i = 2; i <= current_max_slope-1; i++) {
-    current_slope = std::abs(DW[i]-DW[i+1]);
-    if (current_slope > max_slope) {
-      max_slope = current_slope;
+    if (W.size() < 3) {
+        return -1;
     }
-  }
-  return max_slope;
+    int start = std::max(1, delay - searchRadius);
+    int end = std::min(
+        static_cast<int>(W.size()) - 2,
+        delay + searchRadius
+    );
+    if (start > end) {
+        return -1;
+    }
+    int bestIdx = start;
+    double bestPeak = W[start];
+    for (int i = start; i <= end; ++i) {
+        if (W[i] > W[i - 1] &&
+            W[i] > W[i + 1] &&
+            W[i] > bestPeak) {
+
+            bestPeak = W[i];
+            bestIdx = i;
+        }
+    }
+    return bestIdx;
 }
 
-double max(const std::span<double>& W) {
+double findMaxSlope(const std::span<const double>& DW) {
+    if (DW.size() < 2) {
+        return 0.0;
+    }
+    double best_slope = std::abs(DW[0] - DW[1]);
+    for (std::size_t i = 1; i + 1 < DW.size(); ++i) {
+        double current_slope =
+            std::abs(DW[i] - DW[i + 1]);
+        if (current_slope > best_slope) {
+            best_slope = current_slope;
+        }
+    }
+    return best_slope;
+}
+
+double max(const std::span<const double>& W) {
   return *std::max_element(W.begin(), W.end());
 }
-
-//double average(
-//    const std::span<const double>& w,
-//    std::size_t delay) {
-//    double sum = std::accumulate(
-//        w.begin(),
-//        w.end() - delay,
-//        0.0
-//    );
-//    return sum / static_cast<double>(w.size() - delay);
-//}

@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/jonathan/git-repos/embedded-systems/qrs-detector/source/build-debug/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -12,3 +12,12 @@ file(GLOB SOURCES
 add_executable(app ${SOURCES})
 
 target_include_directories(app PRIVATE include)
+
+target_compile_options(app PRIVATE
+    $<$<CONFIG:Debug>:-fsanitize=address>
+    $<$<CONFIG:Debug>:-fno-omit-frame-pointer>
+)
+
+target_link_options(app PRIVATE
+    $<$<CONFIG:Debug>:-fsanitize=address>
+)

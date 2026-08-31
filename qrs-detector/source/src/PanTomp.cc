@@ -83,10 +83,7 @@ void PanTomp::analyze() {
       return;
     }
   }
-  data.current_max_slope = findMaxSlope(
-        data.DW,
-        data.current_max_slope
-      );
+  data.current_max_slope = findMaxSlope(data.DW);
   addRR();
   data.counter = 0;
   data.found_beat = 1; // temp
@@ -116,7 +113,11 @@ bool PanTomp::checkThresholds() {
   bool found = false;
   double peakI = data.DW[1];
   if (peakI > data.thresI1) {
-    double peakF = data.W[searchPeak()];
+    double peakF = data.W[searchPeak(
+                                data.W,
+                                data.delay,
+                                data.searchRadius)
+                         ];
     if (peakF > data.thresF1) {
       found = true;
       data.SPKI = 0.125*peakI+0.875*data.SPKI;
