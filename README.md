@@ -68,6 +68,7 @@ To visualize results, run any python inspect file within `/tools/python/` folder
 ## Bugs
 
 * [ERROR] configure: error: no usable python found at /home/USER/anaconda3/bin/pythonX.XX
+
 When building the toolchain, if you compiled the tool in a python env, you need to be inside that env to build the toolchain.
 
 ---

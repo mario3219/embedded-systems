@@ -17,7 +17,12 @@ if [ ! -d "$SOURCES_DIR/crosstool-ng-1.28.0" ]; then
 fi
 
 cd $SOURCES_DIR/crosstool-ng-1.28.0/
-export PATH="/usr/bin:/bin:$PATH"
+
+export PATH=/usr/bin:/bin
+unset PYTHON
+unset PYTHONHOME
+unset PYTHONPATH
+
 ./bootstrap
 ./configure --enable-local
 make
