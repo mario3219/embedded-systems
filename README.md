@@ -1,6 +1,6 @@
 # ECG Heart-rate Detector
 
-This project is a low deployment C++ application for ECG QRS Complex Detection. It utilizes the Pan-Tompkins Algorithm.
+An embedded Linux application of a QRS detector. The detector uses the Pan-Tompkins algorithm, and was tested for the AArch64 architecture using a custom cross-toolchain, U-Boot, Linux kernel, BusyBox root filesystem, and QEMU.
 
 <https://courses.csail.mit.edu/18.337/2017/projects/subramanian_sandya/Papers/Pan%2BTompkins.pdf?>
 
@@ -42,7 +42,8 @@ sudo apt install \
 cmake libtool libtool-bin flex \
 texinfo help2man bison \
 libssl-dev libgnutls28-dev \
-libncurses-dev
+libncurses-dev autoconf automake \
+libtool
 ```
 
 ### Get data

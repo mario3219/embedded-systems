@@ -8,5 +8,7 @@ echo
 echo "QRS Detector" 
 echo 
 
+/usr/bin/app
+
 exec /bin/sh 
 EOF
