@@ -1,0 +1,11 @@
+--- busybox-1.36.1/scripts/kconfig/lxdialog/check-lxdialog.sh	2021-01-01 15:52:27.000000000 +0500
++++ busybox-1.36.1_patched/scripts/kconfig/lxdialog/check-lxdialog.sh	2026-01-14 05:28:24.876501792 +0500
+@@ -47,7 +47,7 @@
+ check() {
+         $cc -x c - -o $tmp 2>/dev/null <<'EOF'
+ #include CURSES_LOC
+-main() {}
++int main() {}
+ EOF
+ 	if [ $? != 0 ]; then
+ 	    echo " *** Unable to find the ncurses libraries or the"       1>&2

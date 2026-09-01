@@ -40,7 +40,9 @@ Requirements and install:
 ```
 sudo apt install \
 cmake libtool libtool-bin flex \
-texinfo help2man bison
+texinfo help2man bison \
+libssl-dev libgnutls28-dev \
+libncurses-dev
 ```
 
 ### Get data
