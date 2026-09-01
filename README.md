@@ -43,21 +43,32 @@ cmake libtool libtool-bin flex \
 texinfo help2man bison
 ```
 
-From `/scripts` folder, run:
+### Get data
+
+From `/tools` folder, run:
 ```
 ./get_data.sh
 ```
 
-There are three source directories:
-* `/source`
-Implementation of code.
-* `/host-source`
-The SoC variant of the implementation intended to compile to host.
-* `/target-source`
-The final SoC variant intended to compile to target.
+### Natively compile code
+From `/code/native`:
+```
+mkdir build
+cd build
+cmake ..
+make
+```
 
-For the `/source` variant, go into `/source/build` and run `cmake ..` to generate the Makefile and run `make` to compile. Run `./app` to run the application.
-To visualize results, run any python inspect file within `/scripts/tools/` folder.
+And execute using `./app`
+
+To visualize results, run any python inspect file within `/tools/python/` folder.
+
+---
+
+## Bugs
+
+* [ERROR] configure: error: no usable python found at /home/USER/anaconda3/bin/pythonX.XX
+When building the toolchain, if you compiled the tool in a python env, you need to be inside that env to build the toolchain.
 
 ---
 
