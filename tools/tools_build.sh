@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # DIRECTORIES
-SRC_DIR=$(realpath "$(pwd)/")
+SRC_DIR=$(realpath "$(pwd)")
 
-cd "${SOURCES_DIR}/x-tool/"
+cd "${SRC_DIR}/x-tool/"
 ./load.sh
 ./build.sh
 
-cd "${SOURCES_DIR}/bootloader/"
+cd "${SRC_DIR/bootloader/"
 ./build.sh
 
-cd "${SOURCES_DIR}/kernel/"
+cd "${SRC_DIR}/kernel/"
 ./load.sh
 ./build.sh
