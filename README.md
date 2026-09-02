@@ -1,6 +1,6 @@
 # ECG Heart-rate Detector
 
-An embedded Linux application of a QRS detector. The detector uses the Pan-Tompkins algorithm, and was tested for the AArch64 architecture using a custom cross-toolchain, U-Boot, Linux kernel, BusyBox root filesystem, and QEMU.
+An embedded Linux application of a QRS detector. The detector uses the Pan-Tompkins algorithm, and was tested for the AArch64 architecture using a custom cross-toolchain, U-Boot, Linux kernel, BusyBox root filesystem, and QEMU. The detector is simulated as a virtual SoC and receives data from a serial port. An external provider application interfaces with the same port, simulating an external sensor.
 
 <https://courses.csail.mit.edu/18.337/2017/projects/subramanian_sandya/Papers/Pan%2BTompkins.pdf?>
 
