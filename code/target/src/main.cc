@@ -19,14 +19,15 @@ int main()
 
     PanTomp pt(fs, T, T_train, searchRadius);
 
-    std::ofstream outputFile("output.csv");
+    //std::ofstream outputFile("output.csv");
+    std::ofstream outputFile("/mnt/host/output.csv");
 
     if (!outputFile) {
         std::cerr << "Could not open output file\n";
         return 1;
     }
 
-    int fd = open("/dev/vport0p1", O_RDONLY);
+    int fd = open("/dev/vport1p1", O_RDONLY);
 
     if (fd < 0) {
         std::cerr << "Could not open ECG input device\n";

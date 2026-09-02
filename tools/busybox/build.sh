@@ -36,7 +36,8 @@ mkdir -p \
     ${STAGING_DIR}/tmp \
     ${STAGING_DIR}/run \
     ${STAGING_DIR}/mnt \
-    ${STAGING_DIR}/root
+    ${STAGING_DIR}/root \
+    ${SRC_DIR}/data/qemu-output
 
 chmod 1777 ${STAGING_DIR}/tmp
 cp "${INIT_PATH}" "${STAGING_DIR}"

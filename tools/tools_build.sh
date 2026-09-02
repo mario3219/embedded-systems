@@ -11,4 +11,5 @@ cd "${SOURCES_DIR}/bootloader/"
 ./build.sh
 
 cd "${SOURCES_DIR}/kernel/"
+./load.sh
 ./build.sh

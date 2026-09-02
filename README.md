@@ -99,19 +99,22 @@ cd /code/target/scripts
 ./compile-target.sh
 ```
 
-All the tools should now be built and ready. It's time to build the target filesystem and boot image.
+And compile the sensor application
+```
+cd /code/ecg-sensor
+./compile.sh
+```
+
+All the tools and applications should now be built and ready. It's time to build the target filesystem and boot image.
 
 ```
 cd /tools
 ./build_target.sh
 ```
 
-Now we can simulate the target using QEMU.
+Now we can start simulating. Open two terminals, and enter the `/tools` folder in both. In one terminal, start the sensor by running `./start_sensor.sh`. This will simulate an external ECG sensor waiting to forward its input to a shared port. Then, start your virtual SoC using `./start_qemu.sh`. The sensor will now stream raw data into the SoC through a virtual interface. Output of the SoC is saved in `/data`.
 
-```
-cd /tools
-./run.sh
-```
+To visualize results, use the python inspect files in `/tools/python`. You can get help by running `python inspect_data.py --help`.
 
 ## Natively compile the code
 
@@ -127,8 +130,6 @@ make
 
 And execute using `./app`
 
-To visualize results, run any python inspect file within `/tools/python/` folder.
-
 ---
 
 ## Bugs
@@ -140,8 +141,6 @@ When building the toolchain, if you compiled the tool in a python env, you need 
 ---
 
 ## Development Notes
-
-* There is currently no input streams for the simulated SoC and the simulation will complain to check data paths.
 
 * Toolchain config: aarch64-unknown-linux-gnu
 * Bootloader config: qemu_arm64_defconfig
