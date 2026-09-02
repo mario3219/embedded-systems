@@ -15,8 +15,16 @@ All time dependencies are based physiological limitations, for example a heartbe
 
 The model outputs streaming binary series of detected peaks.
 
+### Filter intermediates
+
 ![Filter operations](figures/Figure_1.png)
+
+### Detected QRS from filter output
+
 ![Filter operations](figures/Figure_2.png)
+
+### Derived heartrate from detected QRS
+
 ![Filter operations](figures/Figure_3.png)
 
 ---
