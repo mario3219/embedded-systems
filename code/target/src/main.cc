@@ -1,59 +1,82 @@
 #include <iostream>
 #include <fstream>
-#include <filesystem>
 #include <cstdint>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "PanTomp.h"
 
-namespace fs = std::filesystem;
+int main()
+{
+    constexpr double fs = 250;
+    constexpr double T = 0.150;
+    constexpr int T_train = 2;
+    constexpr int searchRadius = 10;
 
-int main() {
+    constexpr int trainingSamples = static_cast<int>(fs * T_train);
+    int counter = 0;
+    bool trained = false;
 
-  // paths
-  fs::path SRC_DIR = fs::current_path();
-  fs::path INPUT = SRC_DIR.parent_path().parent_path() / "data" / "118e00.raw";
-  fs::path OUTPUT = SRC_DIR.parent_path().parent_path() / "data" / "output.csv";
+    PanTomp pt(fs, T, T_train, searchRadius);
 
-  // declare
-  double fs = 250;
-  double T = 0.150;
-  int T_train = 2; // How many seconds to train for
-  int searchRadius = 10; // Radius to search for candidate peak
-  int timer = static_cast<int>(fs*2);   // Learning phase uses first 2s of samples
-  int counter = 0;
-  PanTomp pt(fs, T, T_train, searchRadius);
+    std::ofstream outputFile("output.csv");
 
-  // open streams
-  std::ifstream file(INPUT, std::ios::binary);
-  std::ofstream outputFile(OUTPUT);
-
-  int16_t x;
-  if (file.is_open() && outputFile) {
-    while (file.read(reinterpret_cast<char*>(&x), sizeof(x))) {
-      pt.process(static_cast<double>(x));
-      pt.add_pretrain();
-      pt.write(outputFile, static_cast<double>(x));
-      counter++;
-      if (counter >= timer) {
-        pt.pretrain();
-        break;
-      }
+    if (!outputFile) {
+        std::cerr << "Could not open output file\n";
+        return 1;
     }
-    while (file.read(reinterpret_cast<char*>(&x), sizeof(x))) {
-      pt.process(static_cast<double>(x));
-      pt.analyze();
-      pt.write(outputFile, static_cast<double>(x));
+
+    int fd = open("/dev/vport0p1", O_RDONLY);
+
+    if (fd < 0) {
+        std::cerr << "Could not open ECG input device\n";
+        return 1;
     }
-    file.close();
-  } else {
-    std::cerr 
-      << "Could not process, check paths." << "\n"
-      << INPUT << "\n"
-      << OUTPUT << "\n";
-  }
 
-  std::cout << "Saved output to: " << "\n" << OUTPUT << "\n";
-  std::cout << "Done" << "\n";
+    while (true) {
+        int16_t x;
 
-  return 0;
+        ssize_t n = read(fd, &x, sizeof(x));
+
+        if (n < 0) {
+            perror("read");
+            break;
+        }
+
+        if (n == 0) {
+            std::cerr << "ECG stream closed\n";
+            break;
+        }
+
+        if (n != sizeof(x)) {
+            std::cerr << "Partial ECG sample received\n";
+            continue;
+        }
+
+        double sample = static_cast<double>(x);
+
+        pt.process(sample);
+
+        if (!trained) {
+            pt.add_pretrain();
+
+            ++counter;
+
+            if (counter >= trainingSamples) {
+                pt.pretrain();
+                trained = true;
+
+                std::cout << "Training complete\n";
+            }
+        }
+        else {
+            pt.analyze();
+        }
+
+        pt.write(outputFile, sample);
+    }
+
+    close(fd);
+
+    return 0;
 }

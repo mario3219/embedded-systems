@@ -15,6 +15,7 @@ export TARGET
     --build="$(gcc -dumpmachine)" \
     --host="$TARGET_TRIPLET" \
     CC="$TARGET-gcc" \
+    CXX="$TARGET-g++" \
     AR="$TARGET-ar" \
     RANLIB="$TARGET-ranlib" \
     STRIP="$TARGET-strip"

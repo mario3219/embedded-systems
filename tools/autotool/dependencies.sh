@@ -2,11 +2,12 @@
 
 SRC_DIR=$(realpath "$(pwd)/../../")
 ROOTFS=$(realpath "${SRC_DIR}/rootfs/")
-
-COMPILER="aarch64-unknown-linux-gnu"
-SYSROOT=$("${COMPILER}-gcc" -print-sysroot)
-
 APP="${ROOTFS}/staging/usr/local/bin/app"
+COMPILER="aarch64-unknown-linux-gnu"
+
+export PATH="$HOME/x-tools/${COMPILER}/bin:$PATH"
+
+SYSROOT=$("${COMPILER}-gcc" -print-sysroot)
 
 echo "System root:"
 echo "${SYSROOT}"

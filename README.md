@@ -58,6 +58,33 @@ cd /tools
 
 ## Build tools
 
+If you don't have QEMU, install it:
+```
+sudo apt update
+
+sudo apt install \
+    libglib2.0-dev \
+    libpixman-1-dev \
+    zlib1g-dev \
+    pkg-config \
+    ninja-build \
+    meson \
+    python3-venv \
+    git \
+    build-essential \
+    flex \
+    bison \
+    python3-sphinx \
+    python3-sphinx-rtd-theme \
+    ninja-build
+    
+git clone https://gitlab.com/qemu-project/qemu.git
+cd qemu
+./configure
+```
+
+Build tools
+
 ```
 cd /tools
 ./tools_get.sh

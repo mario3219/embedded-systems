@@ -14,5 +14,6 @@ void PanTompData::write(
          << found_beat << ","
          << thresI1 << ","
          << thresF1 << "\n";
+  std::cout << found_beat << "\n";
   return;
 }

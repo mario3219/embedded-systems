@@ -8,13 +8,25 @@ INITRD="rootfs/images/rootfs.cpio.gz"
 
 cd ${SRC_DIR}
 
-qemu-system-arm64 \
-    -M virt \
+#qemu-system-arm64 \
+#    -M virt \
+#    -cpu cortex-a53 \
+#    -m 512M \
+#    -kernel  ${KERNEL} \
+#    -initrd  ${INITRD} \
+#    -append "console=ttyAMA0 earlycon=pl011,0x09000000 keep_bootcon rdinit=/init ignore_loglevel loglevel=8 initcall_debug" \
+#    -serial mon:stdio \
+#    -monitor none \
+#    -display none
+
+qemu-system-aarch64 \
+    -machine virt \
     -cpu cortex-a53 \
     -m 512M \
-    -kernel  ${KERNEL} \
-    -initrd  ${INITRD} \
-    -append "console=ttyAMA0 earlycon=pl011,0x09000000 keep_bootcon rdinit=/init ignore_loglevel loglevel=8 initcall_debug" \
-    -serial mon:stdio \
-    -monitor none \
-    -display none
+    -kernel "${KERNEL}" \
+    -initrd "${INITRD}" \
+    -append "console=ttyAMA0 rdinit=/init" \
+    -nographic \
+    -chardev socket,id=ecg,path=/tmp/ecg.sock,server=on,wait=off \
+    -device virtio-serial-device \
+    -device virtserialport,chardev=ecg,name=ecg
