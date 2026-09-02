@@ -43,6 +43,12 @@ for lib_path in "${LIB_PATHS[@]}"; do
     cp -L "${lib_path}" "${ROOTFS}/staging/lib/"
 done
 
+# FIX!
+# The interpreter expected paths to libraries to be /lib64
+mkdir "${ROOTFS}/staging/lib64"
+shopt -s extglob
+mv ${ROOTFS}/staging/lib/!(${INTERPRETER}) ${ROOTFS}/staging/lib64/
+
 echo
 echo "Found interpreter:"
 echo "${INTERPRETER}"

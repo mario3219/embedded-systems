@@ -15,26 +15,13 @@ All time dependencies are based physiological limitations, for example a heartbe
 
 The model outputs streaming binary series of detected peaks.
 
-![Filter operations](images/Figure_1.png)
-![Filter operations](images/Figure_2.png)
-![Filter operations](images/Figure_3.png)
+![Filter operations](figures/Figure_1.png)
+![Filter operations](figures/Figure_2.png)
+![Filter operations](figures/Figure_3.png)
 
 ---
 
-## Requirements and setup
-
-Preferably work in a conda environment
-
-```
-conda create -n project-env python=3.14.4
-conda activate project-env
-
-conda install -c conda-forge wfdb
-```
-
----
-
-## Development build
+# Target Build Guide
 
 Requirements and install:
 ```
@@ -46,16 +33,57 @@ libncurses-dev autoconf automake \
 libtool
 ```
 
-### Get data
+Data is downloaded and processed using Python, so preferably work in a conda environment.
 
-From `/tools` folder, run:
 ```
+conda create -n project-env python=3.14.4
+conda activate project-env
+
+conda install -c conda-forge wfdb
+```
+
+## Get data
+```
+cd /tools
 ./get_data.sh
 ```
 
-### Natively compile code
-From `/code/native`:
+## Build tools
+
 ```
+cd /tools
+./tools_get.sh
+./tools_build.sh
+```
+
+This will build all the tools required to create the staging filesystem and compile the kernel and application. Next, cross-compile the application.
+
+```
+cd /code/target/scripts
+./build.sh
+./compile-target.sh
+```
+
+All the tools should now be built and ready. It's time to build the target filesystem and boot image.
+
+```
+cd /tools
+./build_target.sh
+```
+
+Now we can simulate the target using QEMU.
+
+```
+cd /tools
+./run.sh
+```
+
+## Natively compile the code
+
+If you just want to compile the code natively, run:
+
+```
+cd /code/native
 mkdir build
 cd build
 cmake ..
@@ -76,17 +104,9 @@ When building the toolchain, if you compiled the tool in a python env, you need 
 
 ---
 
-## Algorithm setup
-
-* Bandpass filter
-* Derivation operator
-* Squaring operator
-* Moving window integration
-* Decision window
-
----
-
 ## Development Notes
+
+* There is currently no input streams for the simulated SoC and the simulation will complain to check data paths.
 
 * Toolchain config: aarch64-unknown-linux-gnu
 * Bootloader config: qemu_arm64_defconfig

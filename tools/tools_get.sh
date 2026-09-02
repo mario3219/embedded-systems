@@ -8,15 +8,24 @@ mkdir -p $SOURCES_DIR
 
 if [ ! -d "$SOURCES_DIR/crosstool-ng-1.28.0" ]; then
   cd "x-tool/"
-  ./crosstool_get.sh
+  ./get.sh
+  cd ${SRC_DIR}
 fi
 
 if [ ! -d "${SOURCES_DIR}/u-boot/.git" ]; then
   cd "bootloader"
-  ./bootloader_get.sh
+  ./get.sh
+  cd ${SRC_DIR}
 fi
 
 if [ ! -d "${SOURCES_DIR}/linux/.git" ]; then
   cd "kernel"
-  ./kernel_get.sh
+  ./get.sh
+  cd ${SRC_DIR}
+fi
+
+if [ ! -d "${SOURCES_DIR}/busybox/.git" ]; then
+  cd "busybox"
+  ./get.sh
+  cd ${SRC_DIR}
 fi
